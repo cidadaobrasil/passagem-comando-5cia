@@ -2,7 +2,7 @@
 
 Relatório de passagem de comando da 5ª Cia PM (Guararapes/Valparaíso), preparado para o afastamento do Cap Josemar para o CAO.
 
-**Período da substituição: 17/08/2026 a 22/01/2027**, cinco meses. A data acompanha o 1º bloco da Rotina 13 do SIPA (ver `C:\projetos\central-cao`), não o fim do curso, que vai até ago/2027. O `relatorio.pdf` e o `relatorio.docx` ainda trazem 16/02/2027, que está superado.
+**Período da substituição: 17/08/2026 a 22/01/2027**, cinco meses. A data acompanha o 1º bloco da Rotina 13 do SIPA (ver `C:\projetos\central-cao`), não o fim do curso, que vai até ago/2027. O `index.html` é a versão vigente; não manter anexos gerados com datas antigas.
 
 ## Como é
 
@@ -36,9 +36,9 @@ Atividade Delegada ativa nos quatro municípios: Guararapes com distribuição o
 
 ## Auditoria de 11/08/2026
 
-Revisão do site contra o `relatorio.pdf` (versão 3.0, corte 29/07/2026). Corrigido: prazos da Visita Solidária, nomes de operação, contagem dos quadros do Trello (são dez), relatório mensal separado do informe semanal, sistema RSO Eletrônico no lugar de SIGA/SGO, e cinco defeitos de CSS e acessibilidade (coluna fixa transparente nas tabelas, contraste do selo "Pendente" no tema escuro, botão de limpar busca sempre visível, campo de busca sem nome acessível, fundos descartados na impressão).
+Revisão do site contra o relatório PDF anterior (versão 3.0, corte 29/07/2026). Corrigido: prazos da Visita Solidária, nomes de operação, contagem dos quadros do Trello (são dez), relatório mensal separado do informe semanal, sistema RSO Eletrônico no lugar de SIGA/SGO, agenda eleitoral com datas do 1º turno e eventual 2º turno, e cinco defeitos de CSS e acessibilidade (coluna fixa transparente nas tabelas, contraste do selo "Pendente" no tema escuro, botão de limpar busca sempre visível, campo de busca sem nome acessível, fundos descartados na impressão).
 
 Em aberto, dependem de confirmação:
 
 - **Siglas das vagas** de sexta e sábado em Guararapes (REI, EJ, DG, DGEM). Confirmar com o Subten PM Marcos antes de trocar rótulo em ofício ou escala.
-- **Exposição do repositório.** Documento de uso interno em repositório público com Pages no ar. Decisão pendente sobre tornar privado e retirar os anexos do versionamento. Ver a lição registrada na página 22 do relatório.
+- **Exposição do repositório.** Documento de uso interno em repositório público com Pages no ar. Decisão pendente sobre tornar privado.
