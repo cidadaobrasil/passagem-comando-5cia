@@ -1,6 +1,8 @@
 # Passagem de Comando — 5ª Cia PM
 
-Relatório de passagem de comando da 5ª Cia PM (Guararapes/Valparaíso), preparado para o afastamento do Cap Josemar para o CAO em **17/08/2026**.
+Relatório de passagem de comando da 5ª Cia PM (Guararapes/Valparaíso), preparado para o afastamento do Cap Josemar para o CAO.
+
+**Período da substituição: 17/08/2026 a 22/01/2027**, cinco meses. A data acompanha o 1º bloco da Rotina 13 do SIPA (ver `C:\projetos\central-cao`), não o fim do curso, que vai até ago/2027. O `relatorio.pdf` e o `relatorio.docx` ainda trazem 16/02/2027, que está superado.
 
 ## Como é
 
@@ -38,6 +40,5 @@ Revisão do site contra o `relatorio.pdf` (versão 3.0, corte 29/07/2026). Corri
 
 Em aberto, dependem de confirmação:
 
-- **Fim da interinidade.** O relatório diz "aproximadamente 16/02/2027". Se for janeiro, o Carnaval (06 a 09/02/2027) sai do período e a agenda muda.
 - **Siglas das vagas** de sexta e sábado em Guararapes (REI, EJ, DG, DGEM). Confirmar com o Subten PM Marcos antes de trocar rótulo em ofício ou escala.
 - **Exposição do repositório.** Documento de uso interno em repositório público com Pages no ar. Decisão pendente sobre tornar privado e retirar os anexos do versionamento. Ver a lição registrada na página 22 do relatório.
