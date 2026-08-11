@@ -45,6 +45,7 @@ a{color:inherit}
 .brand-copy strong{font-size:.9rem;color:var(--navy-strong)}.brand-copy span{font-size:.76rem;color:var(--muted)}
 .icon-btn{min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:var(--navy-strong);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .icon-btn:hover,.icon-btn:focus-visible{background:var(--surface-2)}
+.icon-btn[hidden]{display:none}
 .icon-btn:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible,.table-shell:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .desktop-only{display:none}
@@ -85,6 +86,7 @@ h3{margin:22px 0 6px;color:var(--blue);font-size:1.02rem;line-height:1.35;text-w
 p{margin:8px 0;text-wrap:pretty}
 ul,ol{padding-left:1.3rem;margin:10px 0}li{margin:5px 0}
 .small-note{font-size:.86rem;color:var(--muted);padding:10px 12px;background:var(--surface-2);border-radius:8px}
+.section-content a[href^="#"]{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
 .notice{display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;margin:18px 0 4px;padding:14px;border:1px solid currentColor;border-radius:10px}
 .notice-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:currentColor;color:var(--surface);font-weight:850}
 .notice-danger{color:var(--red);background:var(--danger-bg)}
@@ -94,6 +96,8 @@ ul,ol{padding-left:1.3rem;margin:10px 0}li{margin:5px 0}
 table{width:100%;min-width:620px;border-collapse:collapse;font-size:.82rem;line-height:1.4}
 th,td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
 th{position:sticky;top:0;background:var(--navy-strong);color:var(--surface);font-size:.74rem;z-index:1}
+/* Fundo explícito em toda linha: a 1ª coluna é fixa e herda daqui. Sem isso o texto passa por baixo dela ao rolar. */
+tbody tr{background:var(--surface)}
 tbody tr:nth-child(even){background:var(--surface-2)}tbody tr:last-child td{border-bottom:0}
 td:first-child,th:first-child{position:sticky;left:0;z-index:2;background:inherit}
 th:first-child{background:var(--navy-strong);z-index:3}
@@ -120,6 +124,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 .badge-recorrente{background:var(--surface-2);color:var(--muted)}
 .badge-prazo{background:oklch(90% .05 300);color:oklch(42% .12 300)}
 :root[data-theme="dark"] .badge-prazo{background:oklch(32% .06 300);color:oklch(84% .08 300)}
+:root[data-theme="dark"] .badge-pendente{color:oklch(86% .11 82)}
 .ref-list{padding-left:1.2rem;margin:8px 0;font-size:.86rem;columns:1}
 .ref-list li{margin:3px 0}
 @media(min-width:640px){.ref-list{columns:2;column-gap:24px}}
@@ -142,7 +147,9 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 }
 @media print{
   :root{--bg:white;--surface:white;--surface-2:#f4f6f8;--ink:#111;--muted:#444;--line:#ccd1d8;--navy-strong:#17365d;--blue:#2f5597}
-  body{font-size:10pt;background:white}.toolbar,.search-panel,.sidebar,.back-top,.hero-actions,.security-footer{display:none!important}
+  /* Sem isto o navegador descarta os fundos e o cabeçalho branco das tabelas some no papel. */
+  body{font-size:10pt;background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .toolbar,.search-panel,.sidebar,.back-top,.hero-actions,.security-footer{display:none!important}
   .hero{background:white;color:#111;padding:0 0 18px;border-bottom:2px solid #17365d}.classification{background:#eee;color:#333}.lede{color:#333}
   .meta-item{background:#f2f4f7}.meta-item span{color:#555}.app-shell{display:block}.main{padding:0}
   .report-section{break-inside:auto;border-color:#bbb}.report-section>summary{color:#17365d;padding:12px 0}.report-section>summary svg{display:none}
@@ -173,7 +180,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
   <div class="hero-inner">
     <span class="classification">Documento de uso interno</span>
     <h1>Passagem de comando da 5ª Cia PM</h1>
-    <p class="lede">O que fazer nas primeiras 24 horas, 72 horas e 30 dias, o calendário da interinidade, quem procura quem e o que precisa ser entregue na passagem.</p>
+    <p class="lede">Documento de trabalho da substituição. O que já tem prazo correndo, o que exige decisão pessoal do comandante e o que precisa estar conferido no dia da entrega.</p>
     <div class="meta-strip">
       <div class="meta-item"><span>De</span><strong>Cap PM Josemar</strong></div>
       <div class="meta-item"><span>Para</span><strong>Ten PM Rodrigo</strong></div>
@@ -196,9 +203,8 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
   <main class="main" id="conteudo">
     <div class="search-panel">
       <label class="search-field">
-        <span hidden>Buscar no relatório</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-        <input id="search" type="search" placeholder="Buscar prazo, pessoa, projeto ou sistema" autocomplete="off">
+        <input id="search" type="search" aria-label="Buscar no relatório" placeholder="Buscar prazo, pessoa, projeto ou sistema" autocomplete="off">
         <button class="icon-btn" id="clearSearch" type="button" aria-label="Limpar busca" hidden>×</button>
       </label>
       <p class="search-status" id="searchStatus" aria-live="polite"></p>
@@ -208,6 +214,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <details class="report-section" id="s1" open>
 <summary><span>1. Assunção — 24h, 72h e 30 dias</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
 <div class="section-content">
+<p class="small-note"><strong>Coluna SITUAÇÃO:</strong> <strong>Crítico</strong>, prazo correndo ou risco alto · <strong>Prazo fixo</strong>, data que não se negocia · <strong>Pendente</strong>, parado e à espera de decisão · <strong>Conferir</strong>, existe mas falta validar · <strong>Rotina</strong>, obrigação recorrente, não é pendência.</p>
 <h3 id="primeiras-24h">Primeiras 24 horas</h3>
 <div class="table-shell" tabindex="0" role="region" aria-label="Ações das primeiras 24 horas; deslize horizontalmente se necessário">
 <table>
@@ -218,8 +225,8 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <tr><td>IP e IPM em curso</td><td>Receber a planilha única de prazos e último ato de cada procedimento.</td><td>PJMD + encarregados</td><td><span class="badge badge-critico">Crítico</span></td></tr>
 <tr><td>Mesa do Comandante no SEI</td><td>Abrir a unidade 610025310 e zerar a fila crítica de assinatura.</td><td>Cmt</td><td><span class="badge badge-critico">Crítico</span></td></tr>
 <tr><td>Escala e pessoal</td><td>Validar a escala de agosto, férias, restrições e frota disponível.</td><td>P1/Sargenteação</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
-<tr><td>TCI/TDS</td><td>Confirmar o TCI da semana e os 2 PM/dia no CPI-10.</td><td>CGP</td><td><span class="badge badge-prazo">Prazo fixo</span></td></tr>
-<tr><td>Setores</td><td>Reunir P1, P3, P4, P5, PJMD, Pelotão, GP e Territorial — 15 minutos cada.</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
+<tr><td>TCI/TDS</td><td>Confirmar os 2 PM/dia no CPI-10 e assumir os controles fixos dos dias 05 e 09 (<a href="#rotina-fixa">seção 2</a>).</td><td>CGP</td><td><span class="badge badge-prazo">Prazo fixo</span></td></tr>
+<tr><td>Setores</td><td>Reunir P1, P3, P4, P5, PJMD, Pelotão, GP e Territorial, 15 minutos cada. Abre a rotina semanal de comando (<a href="#rotina-fixa">seção 2</a>).</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -229,11 +236,11 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <table>
 <thead><tr><th scope="col">ASSUNTO</th><th scope="col">AÇÃO</th><th scope="col">RESPONSÁVEL</th><th scope="col">SITUAÇÃO</th></tr></thead>
 <tbody>
-<tr><td>Maria da Penha / Visita Solidária</td><td>Reativar o controle de todos os A-98: prazos de 10 e 20 dias, classificação de risco e evidência de contato.</td><td>Patrulha MP / P3</td><td><span class="badge badge-critico">Crítico</span></td></tr>
-<tr><td>Trello, agenda e acessos</td><td>Sanear os nove quadros, reconciliar Secretário Task e Agenda, transferir credenciais por canal seguro e ativar MFA.</td><td>Cmt</td><td><span class="badge badge-critico">Crítico</span></td></tr>
+<tr><td>Maria da Penha / Visita Solidária</td><td>Reativar o controle de todos os A-98. <strong>1ª visita por telefone em até 10 dias da ocorrência; 2ª em até 20 dias contados da primeira</strong>, antecipando sempre que houver risco iminente à mulher ou à família. Registrar risco e evidência de contato.</td><td>Patrulha Maria da Penha / P3</td><td><span class="badge badge-critico">Crítico</span></td></tr>
+<tr><td>Trello, agenda e acessos</td><td>Sanear os dez quadros, transferir credenciais por canal seguro e ativar MFA.</td><td>Cmt</td><td><span class="badge badge-critico">Crítico</span></td></tr>
 <tr><td>Inventário e material bélico</td><td>Confirmar se a versão assinada em 28JUL incorporou as correções; conciliar carga e material da reserva.</td><td>P4 + Cmt</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
 <tr><td>Operação Eleições 2026</td><td>Confirmar a fase atual, locais, contatos eleitorais, vulnerabilidades, mapa de força e escalas.</td><td>P3 + Cmt</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
-<tr><td>Atividade Delegada</td><td>Confirmar o ciclo do mês, as escalas dos quatro municípios e a próxima remessa.</td><td>P5</td><td><span class="badge badge-recorrente">Recorrente</span></td></tr>
+<tr><td>Atividade Delegada</td><td>Confirmar o ciclo do mês, as escalas dos quatro municípios e a próxima remessa (<a href="#atividade-delegada">seção 4</a>).</td><td>P5</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
 <tr><td>Diário de comando</td><td>Criar o registro: decisão, data, responsável, prazo e evidência. Ainda não existe.</td><td>Cmt</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
 </tbody>
 </table>
@@ -244,15 +251,15 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <table>
 <thead><tr><th scope="col">ASSUNTO</th><th scope="col">AÇÃO</th><th scope="col">RESPONSÁVEL</th><th scope="col">SITUAÇÃO</th></tr></thead>
 <tbody>
-<tr><td>Rotina de comando</td><td>Implantar a reunião semanal de comando e o fechamento mensal (seção 2).</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
-<tr><td>Relações institucionais</td><td>Apresentar-se ao MP, Polícia Civil, Fóruns, Prefeituras e CONSEGs; reativar os CONSEGs (seção 4).</td><td>Cmt</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
-<tr><td>Fluxo PM–PC</td><td>Formalizar por escrito o fluxo do custodiado hospitalizado (seção 3).</td><td>Cmt + PJMD</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
-<tr><td>Eleições 2026</td><td>Consolidar o planejamento por município e fechar o mapa de força (seção 3).</td><td>P3 + Cmt</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
-<tr><td>Projetos territoriais</td><td>Definir a próxima entrega de cada um dos seis projetos (seção 5).</td><td>Áreas responsáveis</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
+<tr><td>Rotina de comando</td><td>Implantar a reunião semanal de comando e o fechamento mensal (<a href="#rotina-fixa">seção 2</a>).</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
+<tr><td>Relações institucionais</td><td>Apresentar-se ao MP, Polícia Civil, Fóruns, Prefeituras e CONSEGs; reativar os CONSEGs (<a href="#consegs">seção 4</a>).</td><td>Cmt</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
+<tr><td>Fluxo PM–PC</td><td>Formalizar por escrito o fluxo do custodiado hospitalizado (<a href="#protocolo-pmpc">seção 3</a>).</td><td>Cmt + PJMD</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
+<tr><td>Eleições 2026</td><td>Consolidar o planejamento por município e fechar o mapa de força (<a href="#checklist-eleicoes">seção 3</a>).</td><td>P3 + Cmt</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
+<tr><td>Projetos territoriais</td><td>Definir a próxima entrega de cada um dos seis projetos (<a href="#s5">seção 5</a>).</td><td>Áreas responsáveis</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
 <tr><td>Avaliação de desempenho</td><td>Retomar o ciclo, adiado quatro vezes.</td><td>P1/Sargenteação</td><td><span class="badge badge-pendente">Pendente</span></td></tr>
-<tr><td>Auditoria de registros</td><td>Auditar amostra de BOPM/RSO/AIT e corrigir o padrão recorrente encontrado.</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
+<tr><td>Auditoria de registros</td><td>Auditar amostra de BOPM, RSO e AIT olhando três pontos já conhecidos: coerência de horário, narrativa e equipe; BO com status Informal ainda em aberto; AIT lavrado em veículo sem placa, chassi ou renavam. Corrigir o que a amostra apontar e devolver a orientação ao efetivo.</td><td>Cmt + P3</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
 <tr><td>Material e frota</td><td>Revisar material, frota e plano de contingência; cobrar o relatório de viaturas baixadas.</td><td>P4</td><td><span class="badge badge-conferir">Conferir</span></td></tr>
-<tr><td>Relatório ao titular</td><td>Emitir o primeiro relatório mensal de uma página (seção 3).</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
+<tr><td>Relatório ao titular</td><td>Emitir o primeiro relatório mensal de uma página (<a href="#acionar-titular">seção 3</a>).</td><td>Cmt</td><td><span class="badge badge-recorrente">Rotina</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -289,6 +296,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <tr><td>Mensal</td><td>Despacho dos ofícios de pagamento da Atividade Delegada dos quatro municípios.</td><td>P5</td><td>Ofícios despachados e protocolados.</td></tr>
 <tr><td>Mensal</td><td>Conferência da distribuição das vagas DEJEM.</td><td>CGP/Administração</td><td>Vagas conferidas e escala validada.</td></tr>
 <tr><td>Mensal</td><td>Planejamento das operações perenes: Baixo Ruído, Cavalo de Aço e ODS.</td><td>P3</td><td>OS, mapa de força e cronograma do mês seguinte.</td></tr>
+<tr><td>Mensal</td><td>Avaliação dos serviços de limpeza, COFIN, cargas e transferências de material, coletes e despesas miúdas.</td><td>P4</td><td>Relatório assinado e parte de encaminhamento no SEI.</td></tr>
 <tr><td>Até o dia 25</td><td>Escala ordinária do mês seguinte.</td><td>P1</td><td>Férias, restrições, eventos, TCI e eleições validados.</td></tr>
 <tr><td>Fechamento mensal</td><td>Frequência, faltas, férias e LP, avaliação, material e frota, balanço dos municípios.</td><td>Todas as áreas</td><td>Reunião de fechamento com ata de pendências.</td></tr>
 </tbody>
@@ -301,15 +309,13 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <thead><tr><th scope="col">DATA</th><th scope="col">COMPROMISSO</th><th scope="col">RESPONSÁVEL</th><th scope="col">PREPARAR</th></tr></thead>
 <tbody>
 <tr><td>26AGO26</td><td>Aniversário do 2º BPM/I e Medalha do Cinquentenário.</td><td>Cmt</td><td>Convite, representação e uniforme.</td></tr>
-<tr><td>29AGO26</td><td>Reunião virtual das Regionais Administrativas, 14h às 15h.</td><td>Cmt</td><td>Pauta e indicadores.</td></tr>
 <tr><td>SET/OUT26</td><td>Defesa pessoal do TCI.</td><td>CGP</td><td>Instrutores, efetivo e registro.</td></tr>
-<tr><td>20SET26</td><td>Visita Técnica de Verificação — Valparaíso, 08h às 09h.</td><td>P4</td><td>Local, documentos e obra.</td></tr>
 <tr><td>OUT26</td><td>Execução da Operação Eleições 2026.</td><td>P3 + Cmt</td><td>Ordem, mapa de força e relatório.</td></tr>
 <tr><td>16OUT26</td><td>ODSI — Guararapes, dia inteiro.</td><td>P3</td><td>Planejamento, apoio e pós-evento.</td></tr>
 <tr><td>27NOV26</td><td>Encerramento do TCI (iniciado em 03AGO26).</td><td>CGP</td><td>Assiduidade, faltosos e relatório final.</td></tr>
 <tr><td>04 e 18DEZ26</td><td>Confraternizações do CPI-10 e da 5ª Cia.</td><td>Cmt</td><td>Representação sem comprometer a escala.</td></tr>
 <tr><td>24 e 31DEZ26</td><td>Pontos facultativos.</td><td>Cmt</td><td>Escala, atendimento e acionamento protegidos.</td></tr>
-<tr><td>JAN27</td><td>Aposentadoria do Subten PM Itálio.</td><td>Cmt + P1</td><td>Reposição definida antes da saída (seção 4).</td></tr>
+<tr><td>JAN27</td><td>Aposentadoria do Subten PM Itálio.</td><td>Cmt + P1</td><td>Reposição definida antes da saída (<a href="#recomposicao-sargentos">seção 4</a>).</td></tr>
 <tr><td>JAN/FEV27</td><td>Retomada anual e preparação do Carnaval.</td><td>Cmt</td><td>Aguardar ordem; iniciar planejamento em janeiro.</td></tr>
 <tr><td>16FEV27</td><td>Término previsto da substituição.</td><td>Cmt</td><td>Balanço dos seis meses e pendências residuais.</td></tr>
 </tbody>
@@ -321,18 +327,17 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <li><strong>Festa do Peão de Rubiácea</strong> (executada de 30JUL a 03AGO26, antes da assunção): conferir apenas pendência documental ou financeira remanescente.</li>
 <li><strong>Treinamento de novas granadas</strong> (Trello, 28JUL): ordem, público-alvo, instrutor, local e data; registrar a execução.</li>
 <li><strong>IPM 2BPMI-10/12/26 — Baixo Ruído</strong>: entrega, despacho e prazos, mantendo as medidas administrativas separadas da conclusão penal.</li>
-<li><strong>IP Guararapes — custodiado hospitalizado</strong>: destino do relatório final e formalização do fluxo PM–PC (seção 3).</li>
+<li><strong>IP Guararapes — custodiado hospitalizado</strong>: destino do relatório final e formalização do fluxo PM–PC (<a href="#protocolo-pmpc">seção 3</a>).</li>
 <li><strong>Calendário ODSI II/2026</strong>: lançamento, destinatários e encerramento do cartão no Trello.</li>
-<li><strong>OS Mulher Mais Segura, planejamento do CONSEG e reunião do Projeto VIDA com o MP</strong>: estavam classificados como "Pessoal" no Secretário Task. Localizar cada OS, corrigir a classificação e definir pauta e responsável.</li>
+<li><strong>OS Mulher Mais Segura, planejamento do CONSEG e reunião do Projeto VIDA com o MP</strong>: ficaram registrados fora do canal oficial. Localizar cada OS, levar para o calendário institucional e definir pauta e responsável.</li>
 </ul>
 
 <h3 id="sob-demanda">Operações e rotinas sob demanda</h3>
 <ul>
-<li><strong>Operações do Batalhão e da Coordenadoria</strong> — Impacto Força Total, Alta Visibilidade, Baixo Ruído, Muralha Paulista, Mulher Segura, Cavalo de Aço e feriados. Cada uma exige OS, mapa de força, planilha e resenha no prazo.</li>
+<li><strong>Operações do Batalhão e da Coordenadoria</strong> — Impacto Baixo Ruído, Força Total, Alta Visibilidade, Muralha Paulista, Mulher Mais Segura, Cavalo de Aço e feriados. Cada uma exige OS, mapa de força, planilha e resenha no prazo.</li>
 <li><strong>Transporte escolar (DETRAN)</strong> — cumprir as datas do calendário do Batalhão pelo canal técnico autorizado.</li>
 <li><strong>CONSEGs</strong> nos quatro municípios — situação e providência na seção 4.</li>
 <li><strong>PROERD</strong> — planejar ciclo e formaturas, historicamente concentradas em junho.</li>
-<li><strong>Material bélico, COFIN, cargas e transferências</strong> — fluxo permanente do P4 e do comando.</li>
 </ul>
 </div>
 </details>
@@ -349,7 +354,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <tr><td>COFIN e diárias</td><td>Ordem, período, curso, deslocamento e cálculo.</td><td>Não aprovar apenas porque o cálculo fecha.</td></tr>
 <tr><td>Inventário e carga</td><td>Conciliação documental, física e de localização.</td><td>Assinatura significa responsabilidade, não mera ciência.</td></tr>
 <tr><td>IP e IPM</td><td>Competência, prazo, prova e individualização.</td><td>Evitar conclusão absoluta onde há apenas insuficiência de prova.</td></tr>
-<tr><td>Eventos e operações</td><td>Base documental, risco, efetivo e apoio.</td><td>Sem documentação ou vistoria, escalar não resolve o risco.</td></tr>
+<tr><td>Eventos e operações</td><td>Base documental, risco, efetivo e apoio.</td><td>Sem documentação e vistoria, escalar mais efetivo não resolve o risco.</td></tr>
 <tr><td>BOPM sensível</td><td>Cronologia, custódia, uso da força e comunicação com a PC.</td><td>Incoerência pequena pode gerar crise grande depois.</td></tr>
 </tbody>
 </table>
@@ -361,7 +366,8 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <table>
 <thead><tr><th scope="col">TIPO</th><th scope="col">QUANDO</th><th scope="col">FORMATO</th></tr></thead>
 <tbody>
-<tr><td>Rotina</td><td>Informe semanal se houver fato relevante; relatório mensal até o 3º dia útil.</td><td>Mensagem curta ou uma página: situação, decisão e risco residual.</td></tr>
+<tr><td>Informe semanal</td><td>Uma vez por semana, se houver fato relevante.</td><td>Mensagem curta: situação, decisão tomada e risco residual.</td></tr>
+<tr><td>Relatório mensal</td><td>Até o 3º dia útil.</td><td>Uma página, oito campos: três fatos operacionais e o resultado; efetivo, eventos e afastamentos dos próximos 30 dias; IP, IPM e PJMD com prazos, decisões e riscos; material e frota indisponíveis ou divergentes; Atividade Delegada, Prefeituras, PC, MP, Judiciário, CONSEG e eleições; decisões estratégicas tomadas; três prioridades do mês seguinte; o que é só ciência e o que exige consulta.</td></tr>
 <tr><td>Consulta</td><td>Assunto estratégico, precedente sensível ou compromisso assumido pelo titular.</td><td>Fatos, opções, recomendação e prazo de decisão.</td></tr>
 <tr><td>Emergência</td><td>Morte ou lesão grave, crise institucional, repercussão relevante ou prazo irreversível.</td><td>Acionamento imediato pelo canal combinado, sem retardar as medidas obrigatórias.</td></tr>
 <tr><td>Sem acionamento</td><td>Rotina e providência coberta pela competência interina.</td><td>Registrar no diário de comando e seguir.</td></tr>
@@ -387,6 +393,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 </ol>
 
 <h3 id="checklist-eleicoes">Operação Eleições — governança</h3>
+<p class="small-note"><strong>Ponto de partida, não recomeçar do zero:</strong> já existe a ordem preparatória <strong>CoordOpPM-002/22/26</strong> e já foi feito o contato com os Cartórios Eleitorais dos quatro municípios para verificar mudança de locais de votação em relação a 2024. A eleição ocorre dentro da interinidade, então a governança da operação é do comandante interino, não é caso de aguardar nova ordem.</p>
 <ul>
 <li>Confirmar zonas, locais de votação, rotas, depósitos e urnas, e contatos da Justiça Eleitoral.</li>
 <li>Levantar vulnerabilidades por município e pontos de concentração.</li>
@@ -424,20 +431,22 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 </table>
 </div>
 
-<h3 id="atividade-delegada-guararapes">Atividade Delegada em Guararapes</h3>
-<p>A articulação municipal passa por <strong>Cleverson Bittencourt</strong> e a interlocução PM pelo <strong>Cb PM Jurca</strong>. A comunicação de escalas deve partir de subtenentes e sargentos, nunca apenas do operador do sistema. Priorizar eventos, Ronda Escolar e Ronda Rural, frentes já aceitas pelo prefeito; alinhar qualquer outra destinação previamente com a Prefeitura pelo mesmo canal.</p>
-<div class="table-shell" tabindex="0" role="region" aria-label="Distribuição ordinária das vagas; deslize horizontalmente se necessário">
+<h3 id="atividade-delegada">Atividade Delegada nos quatro municípios</h3>
+<p>Está ativa nos quatro municípios, com ritmos bem diferentes. Em <strong>Guararapes</strong> há distribuição ordinária de vagas ao longo da semana. Em <strong>Valparaíso</strong> ocorre todo fim de semana, com prioridade para fiscalização de trânsito. <strong>Bento de Abreu</strong> e <strong>Rubiácea</strong> abrem vagas esporádicas, quase sempre para eventos.</p>
+<p>Em Guararapes, a articulação municipal passa por <strong>Cleverson Bittencourt</strong> e a interlocução PM pelo <strong>Cb PM Jurca</strong>. A comunicação de escalas deve partir de subtenentes e sargentos, nunca apenas do operador do sistema. Priorizar eventos, Ronda Escolar e Ronda Rural, frentes já aceitas pelo prefeito; alinhar qualquer outra destinação previamente com a Prefeitura pelo mesmo canal.</p>
+<div class="table-shell" tabindex="0" role="region" aria-label="Distribuição ordinária das vagas em Guararapes; deslize horizontalmente se necessário">
 <table>
 <thead><tr><th scope="col">PERÍODO</th><th scope="col">HORÁRIO</th><th scope="col">VAGAS</th></tr></thead>
 <tbody>
 <tr><td>Segunda a sexta</td><td>10h</td><td>2 (Cb/Sd) — cobre folgas e desfalques.</td></tr>
 <tr><td>Segunda a quinta</td><td>15h às 21h</td><td>2 (1 para Sgt).</td></tr>
-<tr><td>Sexta</td><td>A partir das 18h</td><td>4 (DEJEM).</td></tr>
-<tr><td>Sábado</td><td>A partir das 18h</td><td>2 (DEJEM).</td></tr>
+<tr><td>Sexta</td><td>A partir das 18h</td><td>4.</td></tr>
+<tr><td>Sábado</td><td>A partir das 18h</td><td>2.</td></tr>
 <tr><td>Domingo</td><td>13h, 14h ou 15h</td><td>Conforme programação — confirmar a quantidade antes de abrir.</td></tr>
 </tbody>
 </table>
 </div>
+<p class="small-note"><strong>Antes de reinterpretar sigla:</strong> a rotina acima é a praticada, e é ela que vale. As vagas de sexta e sábado aparecem em fontes anteriores com siglas diferentes (REI, EJ, DG, DGEM). Confirmar a nomenclatura oficial de cada tipo de vaga com o <strong>Subten PM Marcos</strong>, que faz a gestão, antes de trocar rótulo em ofício ou escala.</p>
 
 <h3 id="cobertura-cgp">Cobertura de CGP</h3>
 <p>A Companhia não pode ficar sem CGP. Com DEJEM disponível, abrir duas vagas para cobrir o turno. Sem DEJEM, revezamento semanal ou quinzenal entre <strong>1º Sgt PM Jhonny, 1º Sgt PM Locatelli e Sgt PM J. Almeida</strong>, com folga compensatória combinada.</p>
@@ -448,7 +457,7 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <h3 id="fiscalizacao-moto">Fiscalização de motocicletas</h3>
 <p>Manter e intensificar de forma permanente na área da Cia, sem depender de ações pontuais. As operações Baixo Ruído, Cavalo de Aço e ODS seguem intensificadas de forma contínua, com todo o efetivo engajado em abordagens e autuações, não apenas as frações de trânsito. Catalogar autuações, apreensões e ocorrências correlatas junto aos índices do P3, e divulgar as ações pela imprensa e canais institucionais no padrão das notas de patrulhamento rural, pelo efeito dissuasório.</p>
 <p><strong>Motivo direto:</strong> acidentes recorrentes com moto na área, incluindo vítima adolescente em estado grave em 08AGO26 (BO/PM 202608081317102).</p>
-<p class="small-note">A <strong>Operação ODS</strong> é distinta da <strong>ODSI de 16OUT26</strong> (seção 2), mas as duas podem ocorrer de forma concomitante. Ao planejar, tratar como ações separadas, cada uma com sua OS e seu mapa de força.</p>
+<p class="small-note">A <strong>Operação ODS</strong> é distinta da <strong>ODSI de 16OUT26</strong> (<a href="#agenda-datada">seção 2</a>), mas as duas podem ocorrer de forma concomitante. Ao planejar, tratar como ações separadas, cada uma com sua OS e seu mapa de força.</p>
 
 <h3 id="fluxo-cgp-ocorrencias">Ocorrências graves — fluxo no grupo de CGPs</h3>
 <p>Reforçado ao grupo em 09AGO26: toda ocorrência grave ou de repercussão deve ser compartilhada no grupo com resenha ou preliminar imediata, sem aguardar o fechamento do BOPM. É complementar ao fluxo formal (BOPM, COPOM, CFP, P-2), não o substitui. Manter a exigência ativa durante a interinidade, cobrando ciência e adesão de todos os graduados.</p>
@@ -528,18 +537,17 @@ dialog::backdrop{background:oklch(10% .02 252/.62)}
 <li><strong>Órion</strong> — indicadores; exige VPN, ainda não validado.</li>
 <li><strong>Mapa de Força</strong> — usar a versão oficial institucional.</li>
 <li><strong>DEJEM / Delegada</strong> — conferir ciclo, frequência e remessa.</li>
-<li><strong>SIGA</strong> — relatório operacional conforme OS vigente.</li>
+<li><strong>RSO Eletrônico</strong> — lançamento e conferência do relatório de serviço operacional.</li>
 <li><strong>Sicoord Op</strong> — mapa de força e resultado de operação.</li>
 </ul>
 <p class="small-note"><strong>Unidades SEI:</strong> 610025000 Operacional · 610025003 P3 · 610025004 P4 · 610025100 Arquivo · 610025300 Administrativo · <strong>610025310 Comandante</strong> (caixa crítica de assinatura).</p>
-<p class="small-note"><strong>Trello institucional, nove quadros:</strong> Comandante, P1, P3, P4, P5, PJMD, Sargenteação, Pel PM, GP PM e Territorial. Acesso pelo login institucional, transferido por canal seguro.</p>
+<p class="small-note"><strong>Trello institucional, dez quadros:</strong> Comandante, P1, P3, P4, P5, PJMD, Sargenteação, Pel PM, GP PM e Territorial. Acesso pelo login institucional, transferido por canal seguro.</p>
 
 <h3 id="custodia">Limitações e custódia</h3>
 <ul>
 <li>Base de 29JUL26, com atualizações até 11AGO26. Mudanças posteriores vão para o diário de comando e o relatório mensal.</li>
-<li>Em qualquer divergência, o ato oficial e o processo SEI prevalecem sobre este painel.</li>
 <li>Documentos do Drive (escala, OS do TCI, inventário, IP/IPM) têm confiança alta quando assinados. O Trello tem confiança média: sempre conferir o processo oficial antes de agir.</li>
-<li>Acesso restrito aos responsáveis pela passagem e pelo comando. Sem senhas ou dados táticos aqui.</li>
+<li>Acesso restrito aos responsáveis pela passagem e pelo comando.</li>
 <li>Devolver cópia atualizada ao titular ao final da interinidade, com o balanço dos seis meses.</li>
 </ul>
 </div>
@@ -642,6 +650,15 @@ const observer=new IntersectionObserver(entries=>{
   navLinks.forEach(link=>link.classList.toggle("active",link.dataset.nav===visible.target.id));
 },{rootMargin:"-18% 0px -70% 0px",threshold:[0,.25,.5]});
 sections.forEach(section=>observer.observe(section));
+
+// Link interno para seção fechada não mostra nada: abre o <details> de destino.
+function abrirAlvo(){
+  if(!location.hash)return;
+  const alvo=document.querySelector(location.hash);if(!alvo)return;
+  const secao=alvo.closest("details");if(secao)secao.open=true;
+  alvo.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+addEventListener("hashchange",abrirAlvo);abrirAlvo();
 
 const backTop=document.getElementById("backTop");
 addEventListener("scroll",()=>backTop.classList.toggle("visible",scrollY>700),{passive:true});
