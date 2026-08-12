@@ -12,7 +12,7 @@ from docx.shared import Inches, Pt, RGBColor
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = ROOT / "index.html"
-OUT = ROOT / "revisao-conteudo-word.docx"
+OUT = ROOT / "revisao-conteudo-local.docx"
 
 COLORS = {
     "navy": "17365D",
